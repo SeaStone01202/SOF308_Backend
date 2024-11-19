@@ -1,9 +1,10 @@
 <script setup>
-import Hello from './components/Hello.vue';
+import index from './views/index.vue';
+
 </script>
 
 <template>
-  <Hello></Hello>
+<index></index>
 </template>
 
-<style scoped></style>
+<style></style>
