@@ -14,31 +14,34 @@
           <label for="content" class="form-label">Nội dung:</label>
           <textarea v-model="newPost.content" id="content" class="form-control" placeholder="Nhập nội dung"></textarea>
         </div>
-        <button class="btn btn-primary">Đăng bài</button>
+        <button class="btn btn-primary" >Đăng bài</button>
       </form>
     </div>
   </template>
   
   <script setup>
-  import { ref } from "vue";
+  import { ref, reactive } from "vue";
   
   const emit = defineEmits(["post-added"]);
   
-  const newPost = ref({
+  const newPost = reactive({
     title: "",
     author: "",
     content: "",
+    react: 0
   });
 
-
-  const addPost = () => {
-    if (newPost.value.title && newPost.value.author && newPost.value.content) {
-      emit("post-added", { ...newPost.value });
-      newPost.value = { title: "", author: "", content: "" };
+  function addPost() {
+    if (newPost.title && newPost.author && newPost.content) {
+      emit("post-added", newPost);
+      newPost.title = "";
+      newPost.author = "";
+      newPost.content = "";
+      newPost.react = 0;
     } else {
       alert("Vui lòng điền đầy đủ thông tin!");
     }
-  };
+  }
   </script>  
 
   

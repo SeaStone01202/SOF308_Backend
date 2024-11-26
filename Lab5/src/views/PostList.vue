@@ -5,13 +5,18 @@
       <h3 :class="post.classes">{{ post.title }}</h3>
       <p><strong>Tác giả:</strong> {{ post.author }}</p>
       <p>{{ post.content }}</p>
+      <div class="m-3">
+        <label>Thích {{ post.react }}</label>
+        <br> 
+        <button @click="increaseReact(index)" class="btn btn-success">Thích</button>
+      </div>
       <button @click="changeStyle(index)" class="btn btn-secondary">Thay đổi kiểu</button>
+
     </div>
   </div>
 </template>
 
 <script setup>
-// Nhận danh sách bài viết từ component cha qua props
 const props = defineProps({
   posts: {
     type: Array,
@@ -19,7 +24,10 @@ const props = defineProps({
   },
 });
 
-// Hàm thay đổi kiểu bài viết
+function increaseReact(index) {
+  props.posts[index].react += 1;
+}
+
 const changeStyle = (index) => {
   props.posts[index].style = {
     color: props.posts[index].style.color === "blue" ? "green" : "blue",

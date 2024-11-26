@@ -1,35 +1,28 @@
 <script setup>
 import { reactive, ref } from 'vue';
 
-// Danh sách học sinh
 const students = reactive([]);
 
-// Dữ liệu người dùng (cho form)
 const users = reactive({
   name: '',
   score: null,
   birthday: ''
 });
 
-// Trạng thái chỉnh sửa
 const isEditing = ref(false);
-const editIndex = ref(null); // Lưu chỉ số học sinh đang chỉnh sửa
+const editIndex = ref(null); 
 
 const emit = defineEmits(["user-added"]);
 
-// Hàm thêm hoặc cập nhật học sinh
 const addUser = () => {
   if (users.name && users.score && users.birthday) {
     if (isEditing.value) {
-      // Cập nhật học sinh hiện tại
       students[editIndex.value] = { ...users };
-      isEditing.value = false; // Đặt lại trạng thái chỉnh sửa
-      editIndex.value = null;  // Đặt lại chỉ số học sinh chỉnh sửa
+      isEditing.value = false; 
+      editIndex.value = null;  
     } else {
-      // Thêm học sinh mới
       students.push({ ...users });
     }
-    // Reset form
     users.name = '';
     users.score = null;
     users.birthday = '';
@@ -38,26 +31,23 @@ const addUser = () => {
   }
 };
 
-// Hàm chỉnh sửa học sinh
 const editUser = (index) => {
   const student = students[index];
   users.name = student.name;
   users.score = student.score;
   users.birthday = student.birthday;
-  isEditing.value = true;  // Đặt trạng thái chỉnh sửa
-  editIndex.value = index; // Lưu chỉ số học sinh cần chỉnh sửa
+  isEditing.value = true;
+  editIndex.value = index;
 };
 
-// Hàm xóa học sinh
 const deleteUser = (index) => {
-  students.splice(index, 1); // Xóa học sinh khỏi danh sách
+  students.splice(index, 1);
 };
 </script>
 
 <template>
   <div class="container">
     <div class="row">
-      <!-- Form Thêm / Cập nhật học sinh -->
       <div class="col-5">
         <h1>{{ isEditing ? 'Cập nhật học sinh' : 'Thêm học sinh' }}</h1>
         <form @submit.prevent="addUser">
@@ -77,7 +67,6 @@ const deleteUser = (index) => {
         </form>
       </div>
 
-      <!-- Danh sách học sinh -->
       <div class="col-7">
         <h1>Danh sách học sinh</h1>
         <table class="border">

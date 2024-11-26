@@ -10,17 +10,16 @@ import { reactive } from "vue";
 import CreatePost from "./views/CreatePost.vue";
 import PostList from "./views/PostList.vue";
 
-// Danh sách bài viết
 const posts = reactive([]);
 
-// Hàm thêm bài viết mới
-const addPost = (post) => {
+function addPost(post) {
+  console.log(post);
   posts.push({
     ...post,
     style: { color: "blue", fontStyle: "normal" },
     classes: "default-class",
   });
-};
+}
 </script>
 
 <style>
