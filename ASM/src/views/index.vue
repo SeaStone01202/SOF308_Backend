@@ -1,7 +1,7 @@
 <script setup>
     import 'bootstrap/dist/css/bootstrap.css';
-import 'bootstrap/dist/js/bootstrap.bundle';
-
+    import 'bootstrap/dist/js/bootstrap.bundle';
+    import { reactive, inject, defineEmits, defineProps } from "vue";
 
     import Header from '../components/header.vue';
     import Footer from '../components/footer.vue';
@@ -12,6 +12,16 @@ import 'bootstrap/dist/js/bootstrap.bundle';
     import img3 from '../assets/image/05.jpg';
     import img4 from '../assets/image/03.jpg';
     import img5 from '../assets/image/04.jpg';
+
+
+
+
+    const props = defineProps({
+      listPost: {
+          type: Array,
+          required: true,
+      },
+    });
 </script>
 
 <template>

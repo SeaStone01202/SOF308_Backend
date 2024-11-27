@@ -1,6 +1,8 @@
 <script setup>
     import 'bootstrap/dist/css/bootstrap.css';
     import 'bootstrap/dist/js/bootstrap.bundle';
+    import { defineProps } from "vue";
+    import { inject } from "vue";
 
 
     import Header from '../components/header.vue';
@@ -15,13 +17,19 @@
             };
             reader.readAsDataURL(event.target.files[0]);
         }
+
+        const isLoggedIn = inject('isLoggedIn');
+
+        if (!isLoggedIn) {
+            console.error("Không tìm thấy giá trị 'isLoggedIn' từ provide!");
+        }
 </script>
 
 <template>
     <div>
         <Header></Header>
 
-        <main class="content-background d-flex justify-content-center align-items-center">
+        <main v-if="isLoggedIn"  class="content-background d-flex justify-content-center align-items-center">
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-md-8 col-lg-6">
@@ -59,6 +67,14 @@
                 </div>
             </div>
         </div>
+    </main>
+
+    <main v-else class="d-flex justify-content-center align-items-center" style="height: 80vh;">
+      <div class="text-center">
+        <h3>Bạn chưa đăng nhập!</h3>
+        <p>Vui lòng đăng nhập để tiếp tục.</p>
+        <router-link to="/login" class="btn btn-primary mt-3">Đăng nhập</router-link>
+      </div>
     </main>
 
     <Footer></Footer>

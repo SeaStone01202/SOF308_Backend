@@ -1,84 +1,100 @@
 <script setup>
-    import 'bootstrap/dist/css/bootstrap.css';
-    import 'bootstrap/dist/js/bootstrap.bundle';
+import { reactive, inject, defineEmits, defineProps } from "vue";
+import Header from '../components/header.vue';
+import Footer from '../components/footer.vue';
 
+const emit = defineEmits(["post-added"]);
+const isLoggedIn = inject('isLoggedIn');  // Kiểm tra trạng thái đăng nhập
+const currentUser = inject('currentUser');  // Lấy thông tin người dùng hiện tại
+console.log(currentUser)
+const newPost = reactive({
+    title: "",
+    author: "",  // Bạn có thể thay đổi thành người dùng hiện tại sau khi đăng nhập
+    content: "",
+});
 
-    import Header from '../components/header.vue';
-    import Footer from '../components/footer.vue';
+function addPost() {
+    // Gửi bài viết mới lên app.vue thông qua sự kiện "post-added"
+    if (newPost.title && newPost.content) {
+        newPost.author = currentUser.value.fullname;  // Gán tên người dùng vào author
+        console.log('Tác giả: ' + currentUser.value.fullname)
+        emit("post-added", newPost);
+        newPost.title = "";
+        newPost.content = "";
+        console.log('Đã vòa được đây')
+    } else {
+        alert("Vui lòng điền đầy đủ thông tin!");
+    }
+}
 
+const props = defineProps({
+    listPost: {
+        type: Array,
+        required: true,
+    },
+});
 </script>
 
 <template>
     <div>
         <Header></Header>
+        
+        <main v-if="isLoggedIn" class="content-background">
+            <div class="container">
+                <h2 class="text-center mb-5 text-light">Quản Lý Bài Blog</h2>
+                
+                <!-- Form đăng bài viết mới -->
+                <div class="card mb-5">
+                    <div class="card-body">
+                        <h4 class="card-title">Đăng Bài Viết Mới</h4>
+                        <form @submit.prevent="addPost">
+                            <div class="mb-3">
+                                <label for="title" class="form-label">Tiêu Đề:</label>
+                                <input v-model="newPost.title" type="text" class="form-control" id="title" placeholder="Nhập tiêu đề bài viết" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="content" class="form-label">Nội Dung:</label>
+                                <textarea v-model="newPost.content" class="form-control" id="content" rows="5" placeholder="Nhập nội dung bài viết" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Đăng Bài Viết</button>
+                        </form>
+                    </div>
+                </div>
 
-        <main class="content-background">
-        <div class="container">
-            <h2 class="text-center mb-5 text-light ">Quản Lý Bài Blog</h2>
-
-           <!-- Form đăng bài viết mới -->
-        <div class="card mb-5">
-            <div class="card-body">
-                <h4 class="card-title">Đăng Bài Viết Mới</h4>
-                <form id="postForm" enctype="multipart/form-data">
-                    <div class="mb-3">
-                        <label for="title" class="form-label">Tiêu Đề:</label>
-                        <input type="text" class="form-control" id="title" placeholder="Nhập tiêu đề bài viết" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="content" class="form-label">Nội Dung:</label>
-                        <textarea class="form-control" id="content" rows="5" placeholder="Nhập nội dung bài viết" required></textarea>
-                    </div>
-                    <div class="mb-3">
-                        <label for="image" class="form-label">Hình Ảnh Minh Họa:</label>
-                        <input type="file" class="form-control" id="image" accept="image/*" onchange="previewImage(event)">
-                    </div>
-                    <!-- Xem trước hình ảnh -->
-                    <div class="mb-3">
-                        <img id="preview" src="" alt="Xem trước hình ảnh" style="max-width: 150px; display: none; margin-top: 10px;">
-                    </div>
-                    <button type="submit" class="btn btn-primary">Đăng Bài Viết</button>
-                </form>
+                <!-- Bảng Danh Sách Bài Viết -->
+                <h4 class="mb-3 text-light">Danh Sách Bài Viết</h4>
+                <table class="table table-bordered">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>#</th>
+                            <th>Tiêu Đề</th>
+                            <th>Tác giả</th>
+                            <th>Hành Động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(post, index) in listPost" :key="index">
+                            <td>{{ index }}</td>
+                            <td>{{ post.title }}</td>
+                            <td>Tác giả: {{ post.author }}</td>
+                            <td>
+                                <button class="btn btn-warning btn-sm">Chỉnh Sửa</button>
+                                <button class="btn btn-danger btn-sm">Xóa</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
-        </div>
+        </main>
 
+        <main v-else class="d-flex justify-content-center align-items-center" style="height: 80vh;">
+            <div class="text-center">
+                <h3>Bạn chưa đăng nhập!</h3>
+                <p>Vui lòng đăng nhập để tiếp tục.</p>
+                <router-link to="/login" class="btn btn-primary mt-3">Đăng nhập</router-link>
+            </div>
+        </main>
 
-            <!-- Bảng Danh Sách Bài Viết -->
-        <h4 class="mb-3 text-light">Danh Sách Bài Viết</h4>
-        <table class="table table-bordered">
-            <thead class="table-dark">
-                <tr>
-                    <th>#</th>
-                    <th>Tiêu Đề</th>
-                    <th>Hình Ảnh</th>
-                    <th>Hành Động</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Dữ liệu mẫu -->
-                <tr>
-                    <td>1</td>
-                    <td>Bài Viết Mẫu 1</td>
-                    <td><img src="https://via.placeholder.com/100" alt="Hình Ảnh" style="width: 100px;"></td>
-                    <td>
-                        <button class="btn btn-warning btn-sm">Chỉnh Sửa</button>
-                        <button class="btn btn-danger btn-sm">Xóa</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td>Bài Viết Mẫu 2</td>
-                    <td><img src="https://via.placeholder.com/100" alt="Hình Ảnh" style="width: 100px;"></td>
-                    <td>
-                        <button class="btn btn-warning btn-sm">Chỉnh Sửa</button>
-                        <button class="btn btn-danger btn-sm">Xóa</button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        </div>
-    </main>
-
-    <Footer></Footer>
+        <Footer></Footer>
     </div>
 </template>
