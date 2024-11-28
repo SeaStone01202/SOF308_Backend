@@ -21,7 +21,6 @@ function goToHome() {
     router.push('/index');
   }
 
-// Hàm xử lý đăng ký
 function register() {
   if (!newUser.email || !newUser.password || !newUser.fullname) {
     alert('Vui lòng điền đầy đủ thông tin!');

@@ -1,59 +1,73 @@
 <template>
   <div id="app">
-    <router-view @user-login="handleLogin" @user-registered="addUser" @post-added="addPost" :listPost="listPost" @user-logout="handleLogout"/>
-    <!-- <Header  /> -->
+    <router-view @user-login="handleLogin" 
+                  @user-registered="addUser" 
+                  @post-added="addPost" 
+                  :listPost="listPost" 
+                  @user-logout="handleLogout" 
+                  @comment-added="addComment" 
+                  :listComment="listComment"
+                  @post-deleted="removePost"/>
   </div>
 </template>
 
 <script setup>
 import { reactive, ref, provide } from "vue";
-import managerBlog from "./views/managerBlog.vue";
-import Header from "./components/header.vue";
 
-// Danh sách người dùng
 const listUser = reactive([]);
 
-// Trạng thái đăng nhập
 const isLoggedIn = ref(false);
 provide('isLoggedIn', isLoggedIn);
 
 const listPost = reactive([]);
 
-// Người dùng admin mặc định để kiểm tra đăng nhập
+const listComment = reactive([]);
+
 const userAdmin = ref({
   email: "admin@gmail.com",
   fullname: "admin",
   password: "123",
 });
 
-// Thông tin người dùng hiện tại
 const currentUser = ref({
   email: "",
   fullname: "",
   password: "",
 });
-provide('currentUser', currentUser);  // Cung cấp currentUser cho các component con
+provide('currentUser', currentUser);
 
-// Thêm người dùng vào danh sách khi đăng ký
 function addUser(user) {
-  // Kiểm tra nếu email đã tồn tại
   if (listUser.some(existingUser => existingUser.email === user.email && existingUser.fullname === user.fullname)) {
     alert('User đã tồn tại');
     return;
   }
   
-  listUser.push(user); // Thêm người dùng vào danh sách
+  listUser.push(user); 
   console.log('Đăng ký thành công!');
 }
 
-// Hàm xử lý đăng nhập
+function addComment(comment) {
+  console.log('Nạp comment vào danh sách thành công !');
+  listComment.push(comment);
+}
+
+function removePost(postId) {
+    const index = listPost.findIndex(post => post.id === postId);
+    if (index !== -1) {
+        listPost.splice(index, 1);
+        console.log(`Đã xóa bài viết với ID: ${postId}`);
+    } else {
+        console.log(`Không tìm thấy bài viết với ID: ${postId}`);
+    }
+}
+
+
 function handleLogin(user) {
-  // Kiểm tra xem người dùng có trong danh sách người dùng hay không
   const foundUser = listUser.find(existingUser => existingUser.email === user.email && existingUser.password === user.password);
 
   if (foundUser) {
     isLoggedIn.value = true;
-    currentUser.value = {  // Gán thông tin người dùng vào currentUser
+    currentUser.value = { 
       email: foundUser.email,
       fullname: foundUser.fullname,
       password: foundUser.password,
@@ -65,18 +79,15 @@ function handleLogin(user) {
   }
 }
 
-
-// Hàm xử lý đăng xuất
 function handleLogout(check) {
   console.log('Đăng xuất');
   isLoggedIn.value = check;
 }
 
-// Hàm thêm bài viết
 function addPost(post) {
   console.log('Post added: ', post);
   listPost.push({
-    ...post,  // Thêm bài viết vào danh sách
+    ...post,
   });
   console.log('Bài viết đã được thêm: ', post);
 }

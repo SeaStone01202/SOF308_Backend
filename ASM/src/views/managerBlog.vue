@@ -3,20 +3,21 @@ import { reactive, inject, defineEmits, defineProps } from "vue";
 import Header from '../components/header.vue';
 import Footer from '../components/footer.vue';
 
-const emit = defineEmits(["post-added"]);
-const isLoggedIn = inject('isLoggedIn');  // Kiểm tra trạng thái đăng nhập
-const currentUser = inject('currentUser');  // Lấy thông tin người dùng hiện tại
+const emit = defineEmits(["post-added","post-deleted"]);
+const isLoggedIn = inject('isLoggedIn'); 
+const currentUser = inject('currentUser'); 
 console.log(currentUser)
-const newPost = reactive({
-    title: "",
-    author: "",  // Bạn có thể thay đổi thành người dùng hiện tại sau khi đăng nhập
-    content: "",
-});
+    const newPost = reactive({
+        id : null,
+        title: "",
+        author: "", 
+        content: "",
+    });
 
 function addPost() {
-    // Gửi bài viết mới lên app.vue thông qua sự kiện "post-added"
     if (newPost.title && newPost.content) {
-        newPost.author = currentUser.value.fullname;  // Gán tên người dùng vào author
+        newPost.author = currentUser.value.fullname;
+        newPost.id = Math.floor(Math.random() * 100);
         console.log('Tác giả: ' + currentUser.value.fullname)
         emit("post-added", newPost);
         newPost.title = "";
@@ -33,6 +34,16 @@ const props = defineProps({
         required: true,
     },
 });
+
+
+function deletePost(postId) {
+    emit("post-deleted", postId);
+}
+
+function editPost(postId) {
+
+}
+
 </script>
 
 <template>
@@ -74,12 +85,12 @@ const props = defineProps({
                     </thead>
                     <tbody>
                         <tr v-for="(post, index) in listPost" :key="index">
-                            <td>{{ index }}</td>
+                            <td>{{ post.id }}</td>
                             <td>{{ post.title }}</td>
                             <td>Tác giả: {{ post.author }}</td>
                             <td>
-                                <button class="btn btn-warning btn-sm">Chỉnh Sửa</button>
-                                <button class="btn btn-danger btn-sm">Xóa</button>
+                                <button class="btn btn-warning btn-sm" @click="editPost(post.id)">Chỉnh Sửa</button>
+                                <button class="btn btn-danger btn-sm" @click="deletePost(post.id)">Xóa</button>
                             </td>
                         </tr>
                     </tbody>

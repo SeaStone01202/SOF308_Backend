@@ -4,12 +4,12 @@ import 'bootstrap/dist/js/bootstrap.bundle';
 import { inject } from 'vue';
 
 const emit = defineEmits(["user-logout"]);
-const isLoggedIn = inject('isLoggedIn');  // Kiểm tra trạng thái đăng nhập
+const isLoggedIn = inject('isLoggedIn'); 
 
 function logout() {
     if (isLoggedIn.value) {
         alert('Đăng xuất thành công !');
-        emit('user-logout', false); // Gửi sự kiện 'user-logout' khi đăng xuất
+        emit('user-logout', false);
     } else {
         alert('Đã đăng nhập đâu mà đăng xuất !');
     }

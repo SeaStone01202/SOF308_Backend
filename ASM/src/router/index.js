@@ -11,9 +11,11 @@ const routes = [
     name: 'index', 
     component: index 
   },
-  { path: '/detai-blog', 
-    name: 'detaiBlog', 
-    component: detailBlog 
+  {
+    path: '/detail-blog/:id',
+    name: 'detailBlog',
+    component: detailBlog,
+    props: true 
   },
   {
     path: '/login', 

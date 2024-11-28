@@ -75,47 +75,22 @@
                 <div class="col-md-8">
                     <hr class="featurette-divider">
 
-                    <div class="row featurette bg-body-tertiary rounded p-3">
+                    <div v-for="(post, index) in listPost" :key="index" class="row featurette bg-body-tertiary rounded p-3">
                       <div class="col-md-7">
-                        <h2 class="featurette-heading fw-normal lh-1">First featurette heading. <span class="text-body-secondary">It’ll blow your mind.</span></h2>
-                        <p class="lead">Some great placeholder content for the first featurette here. Imagine some exciting prose here.</p>
-                        <p><router-link to="/detai-blog" class="btn btn-lg btn-secondary">Đọc thêm</router-link></p>
+                        <h2 class="featurette-heading fw-normal lh-1">{{ post.title }}<span class="text-body-secondary">Tác giả: {{ post.author }}</span></h2>
+                        <p class="lead">{{ post.content }}</p>
+                        <p>
+                          <router-link :to="{ name: 'detailBlog', params: { id: post.id } }" class="btn btn-lg btn-secondary">Đọc thêm</router-link>
+                        </p>
                       </div>
                       <div class="col-md-5">
                         <img :src="img5" class="featurette-image img-fluid mx-auto" alt="Image description" width="500" height="500">
                       </div>
+                      <hr class="featurette-divider">
                     </div>
                 
-                    <hr class="featurette-divider">
                 
-                    <div class="row featurette bg-body-tertiary rounded p-4">
-                      <div class="col-md-7 order-md-2">
-                        <h2 class="featurette-heading fw-normal lh-1">Oh yeah, it’s that good. <span class="text-body-secondary">See for yourself.</span></h2>
-                        <p class="lead">Another featurette? Of course. More placeholder content here to give you an idea of how this layout would work with some actual real-world content in place.</p>
-                        <p><a class="btn btn-lg btn-secondary" href="#">Đọc thêm</a></p>
-                      </div>
-                      <div class="col-md-5 order-md-1">
-                        <!-- Sử dụng thẻ <img> thay vì <svg> -->
-                        <img :src="img3" class="featurette-image img-fluid mx-auto" alt="Image description" width="500" height="500">
-                      </div>
-                    </div>
-                    
-                
-                    <hr class="featurette-divider">
-                
-                    <div class="row featurette bg-body-tertiary rounded p-3">
-                      <div class="col-md-7">
-                        <h2 class="featurette-heading fw-normal lh-1">And lastly, this one. <span class="text-body-secondary">Checkmate.</span></h2>
-                        <p class="lead">And yes, this is the last block of representative placeholder content. Again, not really intended to be actually read, simply here to give you a better view of what this would look like with some actual content. Your content.</p>
-                        <p><a class="btn btn-lg btn-secondary" href="#">Đọc thêm</a></p>
-                        </div>
-                      <div class="col-md-5">
-                        <img :src="img4" class="featurette-image img-fluid mx-auto" alt="Image description" width="500" height="500">
-                      </div>
-                    </div>
-                
-                    <hr class="featurette-divider">
-
+                   
                 </div>
             
                 <div class="col-md-4">
