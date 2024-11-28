@@ -4,9 +4,8 @@ import Header from '../components/header.vue';
 import Footer from '../components/footer.vue';
 
 const emit = defineEmits(["post-added","post-deleted"]);
-const isLoggedIn = inject('isLoggedIn'); 
+const globalState = inject('globalState'); // Nhận global state
 const currentUser = inject('currentUser'); 
-console.log(currentUser)
     const newPost = reactive({
         id : null,
         title: "",
@@ -48,9 +47,8 @@ function editPost(postId) {
 
 <template>
     <div>
-        <Header></Header>
         
-        <main v-if="isLoggedIn" class="content-background">
+        <main v-if="globalState.isLoggedIn" class="content-background">
             <div class="container">
                 <h2 class="text-center mb-5 text-light">Quản Lý Bài Blog</h2>
                 

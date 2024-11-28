@@ -26,7 +26,6 @@
 
 <template>
     <div>
-    <Header></Header>
     <main class="content-background">
         <div class="container">
             <div id="carouselExampleDark" class="carousel carousel-dark slide p-3 bg-body-tertiary rounded" data-bs-ride="carousel">

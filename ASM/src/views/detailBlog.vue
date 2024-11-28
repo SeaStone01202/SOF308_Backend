@@ -8,7 +8,7 @@ import Header from '../components/header.vue';
 import Footer from '../components/footer.vue';
 const emit = defineEmits(["comment-added"]);
 const currentUser = inject('currentUser');  
-const isLoggedIn = inject('isLoggedIn');  
+const globalState = inject('globalState'); // Nhận global state
 
 const props = defineProps({
     listPost: {
@@ -52,7 +52,6 @@ function submitComment() {
 
 <template>
     <div>
-        <Header></Header>
         <main class="content-background">
             <div class="container">
                 <div v-if="selectedPost" class="row g-5 mt-3 bg-body-tertiary">
@@ -67,7 +66,7 @@ function submitComment() {
 
                     <div class="col-md-4">
                         <!-- Sidebar -->
-                        <div v-if="isLoggedIn" class="position-sticky" style="top: 2rem;">
+                        <div v-if="globalState.isLoggedIn" class="position-sticky" style="top: 2rem;">
                             <div class="p-4 mb-3 bg-body-tertiary rounded">
                                 <form @submit.prevent="submitComment">
                                     <h4 class="">Bình luận</h4>

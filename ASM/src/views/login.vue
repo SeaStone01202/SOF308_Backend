@@ -1,6 +1,5 @@
 <template>
     <div>
-      <Header></Header>
   
       <main
         class="content-background d-flex justify-content-center align-items-center"
@@ -12,7 +11,7 @@
               <div class="card shadow-lg">
                 <div class="card-body p-5">
                   <!-- Kiểm tra nếu người dùng đã đăng nhập -->
-                  <div v-if="isLoggedIn">
+                  <div v-if="globalState.isLoggedIn">
                     <h3 class="text-center mb-4">Bạn đã đăng nhập rồi!</h3>
                     <p class="text-center">
                       Bạn đã đăng nhập thành công và không cần phải đăng nhập lại.
@@ -84,7 +83,7 @@
   import Footer from '../components/footer.vue';
   import { ref, reactive, inject } from 'vue';
   
-  const isLoggedIn = inject('isLoggedIn');  // Kiểm tra trạng thái đăng nhập
+  const globalState = inject('globalState'); // Nhận global state
   const emit = defineEmits(['user-login']);
   const router = useRouter();
   

@@ -4,12 +4,13 @@ import 'bootstrap/dist/js/bootstrap.bundle';
 import { inject } from 'vue';
 
 const emit = defineEmits(["user-logout"]);
-const isLoggedIn = inject('isLoggedIn'); 
+const globalState = inject('globalState'); // Nhận global state
 
 function logout() {
-    if (isLoggedIn.value) {
+    if (globalState.isLoggedIn) {
         alert('Đăng xuất thành công !');
         emit('user-logout', false);
+        console.log(globalState.isLoggedIn);
     } else {
         alert('Đã đăng nhập đâu mà đăng xuất !');
     }

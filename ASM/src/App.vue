@@ -1,10 +1,11 @@
 <template>
   <div id="app">
+    <Header @user-logout="handleLogout" />
+
     <router-view @user-login="handleLogin" 
                   @user-registered="addUser" 
                   @post-added="addPost" 
                   :listPost="listPost" 
-                  @user-logout="handleLogout" 
                   @comment-added="addComment" 
                   :listComment="listComment"
                   @post-deleted="removePost"/>
@@ -13,11 +14,17 @@
 
 <script setup>
 import { reactive, ref, provide } from "vue";
+import Header from './components/header.vue'; // Import Header
 
-const listUser = reactive([]);
+const listUser = reactive([
 
-const isLoggedIn = ref(false);
-provide('isLoggedIn', isLoggedIn);
+]);
+
+const globalState = reactive({
+  isLoggedIn: false,
+});
+
+provide('globalState', globalState);
 
 const listPost = reactive([]);
 
@@ -66,7 +73,7 @@ function handleLogin(user) {
   const foundUser = listUser.find(existingUser => existingUser.email === user.email && existingUser.password === user.password);
 
   if (foundUser) {
-    isLoggedIn.value = true;
+    globalState.isLoggedIn = true;
     currentUser.value = { 
       email: foundUser.email,
       fullname: foundUser.fullname,
@@ -74,14 +81,14 @@ function handleLogin(user) {
     };
     console.log('Đăng nhập thành công!');
   } else {
-    isLoggedIn.value = false;
+    isLoggedIn = false;
     console.log('Thông tin đăng nhập không chính xác');
   }
 }
 
-function handleLogout(check) {
-  console.log('Đăng xuất');
-  isLoggedIn.value = check;
+function handleLogout(data) {
+  globalState.isLoggedIn = data; // Thay đổi trạng thái khi logout
+  console.log('Đăng xuất thành công!');
 }
 
 function addPost(post) {

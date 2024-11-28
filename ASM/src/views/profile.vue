@@ -8,28 +8,14 @@
     import Header from '../components/header.vue';
     import Footer from '../components/footer.vue';
 
-    // Hàm xem trước ảnh đại diện
-    function previewImage(event) {
-            const reader = new FileReader();
-            reader.onload = function() {
-                const output = document.getElementById('profilePreview');
-                output.src = reader.result;
-            };
-            reader.readAsDataURL(event.target.files[0]);
-        }
+    const globalState = inject('globalState'); // Nhận global state
 
-        const isLoggedIn = inject('isLoggedIn');
-
-        if (!isLoggedIn) {
-            console.error("Không tìm thấy giá trị 'isLoggedIn' từ provide!");
-        }
 </script>
 
 <template>
     <div>
-        <Header></Header>
 
-        <main v-if="isLoggedIn"  class="content-background d-flex justify-content-center align-items-center">
+        <main v-if="globalState.isLoggedIn"  class="content-background d-flex justify-content-center align-items-center">
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-md-8 col-lg-6">
