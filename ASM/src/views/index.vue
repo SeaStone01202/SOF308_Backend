@@ -72,9 +72,10 @@
               
             <div class="row g-5 mt-3">
                 <div class="col-md-8">
-                    <hr class="featurette-divider">
 
                     <div v-for="(post, index) in listPost" :key="index" class="row featurette bg-body-tertiary rounded p-3">
+                      <hr class="featurette-divider">
+
                       <div class="col-md-7">
                         <h2 class="featurette-heading fw-normal lh-1">{{ post.title }}<span class="text-body-secondary">Tác giả: {{ post.author }}</span></h2>
                         <p class="lead">{{ post.content }}</p>
@@ -85,7 +86,6 @@
                       <div class="col-md-5">
                         <img :src="img5" class="featurette-image img-fluid mx-auto" alt="Image description" width="500" height="500">
                       </div>
-                      <hr class="featurette-divider">
                     </div>
                 
                 

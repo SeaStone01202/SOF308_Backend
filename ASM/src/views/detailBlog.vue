@@ -28,19 +28,22 @@ const selectedPost = computed(() => {
     return props.listPost.find(post => post.id === parseInt(postId));
 });
 
+const selectedComments = computed(() => {
+    return props.listComment.filter(comment => comment.id === parseInt(postId));
+});
+
 const comment = reactive({
     id: '',
     name: '',
     text: '',
 });
 
-
-
 function submitComment() {
     if (comment.text) {
-        comment.id = Math.floor(Math.random() * 100);
+        comment.id = parseInt(postId);
         comment.name = currentUser.value.fullname;
         emit("comment-added", comment);
+        alert('Thêm bình luận thành công !')
     } else {
         alert('Chưa nhập nội dung !');
         return;
@@ -75,7 +78,7 @@ function submitComment() {
                                 </form>
                                 <h5 class="mt-2">Danh sách bình luận:</h5>
                                 <ul>
-                                    <li v-for="(comment, index) in listComment" :key="index">
+                                    <li v-for="(comment, index) in selectedComments" :key="index">
                                         <b>{{ comment.name }}</b> 
                                         {{ comment.text }}
                                     </li>
