@@ -4,7 +4,8 @@ import 'bootstrap/dist/js/bootstrap.bundle';
 import { inject } from 'vue';
 
 const emit = defineEmits(["user-logout"]);
-const globalState = inject('globalState'); // Nhận global state
+const globalState = inject('globalState');
+const currentUser = inject('currentUser');
 
 function logout() {
     if (globalState.isLoggedIn) {
@@ -37,9 +38,12 @@ function logout() {
             </form>
 
             <div class="dropdown text-end">
+              <label v-if="currentUser.value && currentUser.value.fullname">Xin chào {{ currentUser.value.fullname }}</label>
+              <label v-else></label>
                 <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                     <img src="https://github.com/mdo.png" alt="mdo" width="32" height="32" class="rounded-circle">
                 </a>
+                
                 <ul class="dropdown-menu text-small">
                     <li><router-link to="/login" class="dropdown-item">Đăng nhập</router-link></li>
                     <li><router-link to="/register" class="dropdown-item">Đăng ký</router-link></li>
