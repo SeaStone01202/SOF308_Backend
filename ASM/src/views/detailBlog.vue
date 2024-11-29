@@ -41,7 +41,7 @@ const comment = reactive({
 function submitComment() {
     if (comment.text) {
         comment.id = parseInt(postId);
-        comment.name = currentUser.value.fullname;
+        comment.name = currentUser.fullname;
         emit("comment-added", comment);
         alert('Thêm bình luận thành công !')
     } else {

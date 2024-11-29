@@ -103,6 +103,7 @@
   
     emit('user-login', { ...UserActivation });
     router.push('/index');
+    alert('Đăng nhập thành công !');
   }
   
   // Chuyển hướng về trang chủ nếu người dùng đã đăng nhập

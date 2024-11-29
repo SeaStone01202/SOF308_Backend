@@ -28,7 +28,6 @@ function register() {
   }
   
   emit("user-registered", { ...newUser });
-  router.push('/login');
 
 }
 </script>

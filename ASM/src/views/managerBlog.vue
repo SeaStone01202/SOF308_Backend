@@ -6,22 +6,37 @@ import Footer from '../components/footer.vue';
 const emit = defineEmits(["post-added","post-deleted"]);
 const globalState = inject('globalState'); // Nhận global state
 const currentUser = inject('currentUser'); 
-    const newPost = reactive({
-        id : null,
-        title: "",
-        author: "", 
-        content: "",
-    });
+
+const newPost = reactive({
+    id: null,  // Thêm id để phân biệt bài viết cũ và mới
+    title: "",
+    author: "",
+    content: "",
+});
 
 function addPost() {
     if (newPost.title && newPost.content) {
-        newPost.author = currentUser.value.fullname;
-        newPost.id = Math.floor(Math.random() * 100);
-        console.log('Tác giả: ' + currentUser.value.fullname)
-        emit("post-added", newPost);
+        newPost.author = currentUser.fullname;
+        
+        // Kiểm tra nếu đang sửa bài viết
+        if (newPost.id !== null) {
+            // Tìm và cập nhật bài viết trong listPost
+            const postIndex = props.listPost.findIndex(post => post.id === newPost.id);
+            if (postIndex !== -1) {
+                props.listPost[postIndex] = { ...newPost }; // Cập nhật bài viết
+                console.log('Bài viết đã được sửa!');
+            }
+        } else {
+            // Tạo bài viết mới nếu chưa có id
+            newPost.id = Math.floor(Math.random() * 100);
+            emit("post-added", { ...newPost });
+            console.log('Bài viết đã được đăng!');
+        }
+
+        // Reset form sau khi thêm hoặc sửa
         newPost.title = "";
         newPost.content = "";
-        console.log('Đã vòa được đây')
+        newPost.id = null;  // Reset id
     } else {
         alert("Vui lòng điền đầy đủ thông tin!");
     }
@@ -34,15 +49,19 @@ const props = defineProps({
     },
 });
 
-
 function deletePost(postId) {
     emit("post-deleted", postId);
 }
 
+// Cập nhật bài viết khi người dùng bấm "Chỉnh sửa"
 function editPost(postId) {
-
+    const postToEdit = props.listPost.find(post => post.id === postId);
+    if (postToEdit) {
+        newPost.id = postToEdit.id;
+        newPost.title = postToEdit.title;
+        newPost.content = postToEdit.content;
+    }
 }
-
 </script>
 
 <template>
@@ -52,10 +71,10 @@ function editPost(postId) {
             <div class="container">
                 <h2 class="text-center mb-5 text-light">Quản Lý Bài Blog</h2>
                 
-                <!-- Form đăng bài viết mới -->
+                <!-- Form đăng hoặc sửa bài viết -->
                 <div class="card mb-5">
                     <div class="card-body">
-                        <h4 class="card-title">Đăng Bài Viết Mới</h4>
+                        <h4 class="card-title">{{ newPost.id ? 'Sửa Bài Viết' : 'Đăng Bài Viết' }}</h4>
                         <form @submit.prevent="addPost">
                             <div class="mb-3">
                                 <label for="title" class="form-label">Tiêu Đề:</label>
@@ -65,7 +84,9 @@ function editPost(postId) {
                                 <label for="content" class="form-label">Nội Dung:</label>
                                 <textarea v-model="newPost.content" class="form-control" id="content" rows="5" placeholder="Nhập nội dung bài viết" required></textarea>
                             </div>
-                            <button type="submit" class="btn btn-primary">Đăng Bài Viết</button>
+                            <button type="submit" class="btn btn-primary">
+                                {{ newPost.id ? 'Cập Nhật Bài Viết' : 'Đăng Bài Viết' }}
+                            </button>
                         </form>
                     </div>
                 </div>

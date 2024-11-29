@@ -1,7 +1,7 @@
-<script setup>
+cd ASM<script setup>
     import 'bootstrap/dist/css/bootstrap.css';
     import 'bootstrap/dist/js/bootstrap.bundle';
-    import { defineProps } from "vue";
+    import { defineProps, reactive } from "vue";
     import { inject } from "vue";
 
 
@@ -9,6 +9,26 @@
     import Footer from '../components/footer.vue';
 
     const globalState = inject('globalState'); // Nhận global state
+    const currentUser = inject('currentUser');
+    const editedUser = reactive({
+        email: '',
+    fullname: '',
+    password: '',
+    });
+    const emit = defineEmits(['user-edit']);
+
+    function editProfile() {
+    if (!editedUser.password.trim()) {
+        alert('Vui lòng nhập mật khẩu mới.');
+        return;
+    }
+    currentUser.fullname = editedUser.fullname;
+    currentUser.email = editedUser.email;
+    currentUser.password = editedUser.password;
+    emit('user-edit', { ...currentUser });
+
+    alert('Cập nhật thông tin thành công!');
+}
 
 </script>
 
@@ -22,26 +42,21 @@
                     <div class="card shadow-lg">
                         <div class="card-body p-5">
                             <h3 class="text-center mb-4">Chỉnh Sửa Thông Tin</h3>
-                            <form enctype="multipart/form-data">
-                                <!-- Hình ảnh đại diện -->
-                                <div class="text-center mb-4">
-                                    <img src="https://via.placeholder.com/150" alt="Profile Image" class="profile-img mb-3" id="profilePreview">
-                                    <input type="file" class="form-control" id="profileImage" accept="image/*" onchange="previewImage(event)">
-                                </div>
+                            <form @submit.prevent="editProfile">
                                 <!-- Fullname -->
                                 <div class="mb-3">
                                     <label for="fullname" class="form-label">Họ và Tên:</label>
-                                    <input type="text" class="form-control" id="fullname" value="Nguyễn Văn A" required>
+                                    <input type="text" class="form-control" id="fullname" v-model="editedUser.fullname" required>
                                 </div>
                                 <!-- Email -->
                                 <div class="mb-3">
                                     <label for="email" class="form-label">Email:</label>
-                                    <input type="email" class="form-control" id="email" value="email@example.com" required>
+                                    <input type="email" class="form-control" id="email" v-model="editedUser.email" required>
                                 </div>
                                 <!-- Password -->
                                 <div class="mb-3">
                                     <label for="password" class="form-label">Mật khẩu:</label>
-                                    <input type="password" class="form-control" id="password" placeholder="Nhập mật khẩu mới" required>
+                                    <input type="password" class="form-control" id="password" v-model="editedUser.password" placeholder="Nhập mật khẩu mới" required>
                                 </div>
                                 <!-- Nút cập nhật -->
                                 <button type="submit" class="btn btn-primary w-100">Cập Nhật</button>

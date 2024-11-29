@@ -8,13 +8,17 @@
                   :listPost="listPost" 
                   @comment-added="addComment" 
                   :listComment="listComment"
-                  @post-deleted="removePost"/>
+                  @post-deleted="removePost"
+                  @user-edit="editUser"/>
   </div>
 </template>
 
 <script setup>
 import { reactive, ref, provide, onMounted, watch } from "vue";
 import Header from './components/header.vue'; // Import Header
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
 
 const listUser = reactive([]);
 
@@ -27,40 +31,48 @@ provide('globalState', globalState);
 const listPost = reactive([]);
 const listComment = reactive([]);
 
-const userAdmin = ref({
+const userAdmin = reactive({
   email: "admin@gmail.com",
   fullname: "admin",
   password: "123",
 });
 
-const currentUser = ref({
+const currentUser = reactive({
   email: "",
   fullname: "",
   password: "",
 });
+
 provide('currentUser', currentUser);
 
 onMounted(() => {
-  if (!listUser.some(user => user.email === userAdmin.value.email)) {
-    listUser.push(userAdmin.value);
+  // Kiểm tra nếu userAdmin đã tồn tại trong danh sách trước khi thêm
+  if (!listUser.some(user => user.email === userAdmin.email)) {
+    listUser.push(userAdmin);
   }
 
-  const savedUsers = localStorage.getItem('listUser');
-  const savedPosts = localStorage.getItem('listPost');
-  const savedComments = localStorage.getItem('listComment');
+  // Đồng bộ dữ liệu từ localStorage, tránh thêm user đã tồn tại
+  const savedUsers = JSON.parse(localStorage.getItem('listUser')) || [];
+  const uniqueUsers = savedUsers.filter(
+    savedUser => !listUser.some(user => user.email === savedUser.email)
+  );
+  listUser.push(...uniqueUsers);
+
+  const savedPosts = JSON.parse(localStorage.getItem('listPost')) || [];
+  const savedComments = JSON.parse(localStorage.getItem('listComment')) || [];
   const savedIsLoggedIn = JSON.parse(localStorage.getItem('isLoggedIn'));
   const savedCurrentUser = JSON.parse(localStorage.getItem('currentUser'));
 
-  if (savedUsers) listUser.push(...JSON.parse(savedUsers));
-  if (savedPosts) listPost.push(...JSON.parse(savedPosts));
-  if (savedComments) listComment.push(...JSON.parse(savedComments));
+  listPost.push(...savedPosts);
+  listComment.push(...savedComments);
+
   if (savedIsLoggedIn !== null) globalState.isLoggedIn = savedIsLoggedIn;
+
   if (savedCurrentUser) {
-    currentUser.value = {
-      ...savedCurrentUser,
-    };
+    Object.assign(currentUser, savedCurrentUser);
   }
 });
+
 
 watch(
   () => listUser,
@@ -93,7 +105,7 @@ watch(
 
 watch(
   function() {
-    return currentUser.value;
+    return currentUser;
   },
   function (newVal) {
     localStorage.setItem('currentUser', JSON.stringify(newVal));
@@ -102,13 +114,15 @@ watch(
 );
 
 function addUser(user) {
-  if (listUser.some(existingUser => existingUser.email === user.email && existingUser.fullname === user.fullname)) {
+  if (listUser.some(existingUser => existingUser.email === user.email || existingUser.fullname === user.fullname)) {
     alert('User đã tồn tại');
     return;
   }
   
   listUser.push(user);
   console.log('Đăng ký thành công!');
+  router.push('/login');
+
 }
 
 function addComment(comment) {
@@ -131,11 +145,9 @@ function handleLogin(user) {
 
   if (foundUser) {
     globalState.isLoggedIn = true;
-    currentUser.value = { 
-      email: foundUser.email,
-      fullname: foundUser.fullname,
-      password: foundUser.password,
-    };
+    currentUser.email = foundUser.email;
+    currentUser.fullname = foundUser.fullname;
+    currentUser.password = foundUser.password;
     console.log('Đăng nhập thành công!');
   } else {
     globalState.isLoggedIn = false;
@@ -144,14 +156,34 @@ function handleLogin(user) {
 }
 
 function handleLogout(data) {
-  globalState.isLoggedIn = data;
-  currentUser.value = {
-    email: "",
-    fullname: "",
-    password: "",
-  };
+  globalState.isLoggedIn = false;
+
+  currentUser.email = "";
+  currentUser.fullname = "";
+  currentUser.password = "";
+
   console.log('Đăng xuất thành công!');
 }
+
+function editUser(user) {
+  // Tìm người dùng trong danh sách listUser
+  const foundUser = listUser.find(existingUser => existingUser.email === user.email);
+
+  if (foundUser) {
+    // Cập nhật thông tin của người dùng
+    foundUser.fullname = user.fullname;
+    foundUser.password = user.password;
+
+    // Đồng bộ với localStorage
+    localStorage.setItem('listUser', JSON.stringify(listUser));
+    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+
+    console.log('Thông tin người dùng đã được cập nhật');
+  } else {
+    console.log('Không tìm thấy người dùng để cập nhật');
+  }
+}
+
 
 function addPost(post) {
   console.log('Post added: ', post);
